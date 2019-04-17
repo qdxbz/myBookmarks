@@ -12,41 +12,10 @@
     <header></header>
     <main>
         <div id="main" class="wrapper"></div>
-        <!-- <div>
-            <kbd>q</kbd>
-            <kbd>w</kbd>
-            <kbd>e</kbd>
-            <kbd>q</kbd>
-            <kbd>w</kbd>
-            <kbd>e</kbd>
-            <kbd>q</kbd>
-            <kbd>w</kbd>
-            <kbd>e</kbd>
-            <kbd>p</kbd>
-        </div>
-        <div>
-            <kbd>w</kbd>
-            <kbd>e</kbd>
-            <kbd>q</kbd>
-            <kbd>w</kbd>
-            <kbd>e</kbd>
-            <kbd>q</kbd>
-            <kbd>w</kbd>
-            <kbd>e</kbd>
-            <kbd>p</kbd>
-        </div>
-        <div>
-            <kbd>z</kbd>
-            <kbd>x</kbd>
-            <kbd>c</kbd>
-            <kbd>v</kbd>
-            <kbd>b</kbd>
-            <kbd>n</kbd>
-            <kbd>m</kbd>
-        </div> -->
     </main>
     <footer></footer>
     <script>
+        //1.初始化数据
         var keys = {
             0:{0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p',length:10},
             1:{0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l',length:9},
@@ -71,38 +40,83 @@
             'm':'mcdonalds.com',
             'v':'v2ex.com'
         }
-        var hashInlocalStorage = JSON.parse(localStorage.getItem('uuu')||'null')
+        function getFromLocalStorage(name){
+            return JSON.parse(localStorage.getItem('name')||'null')
+        }
+        function tag(tagName){
+            return document.createElement(tagName)
+        }
+        function createSpan(textContent){
+            var span = tag('span')
+            span.className="text"
+            span.textContent = textContent;
+            return span
+        }
+        function createButton(id){
+            var button = tag('button')
+                button.textContent="编辑"
+                button.id=id
+                button.onclick=function(qweqwe){
+                    var button2 = qweqwe['target']
+                    var img2 = button2.nextSibling
+                    var key=qweqwe['target']['id']
+                    var x=prompt('给我一个网址')
+                    hash[key]=x
+                    img2.src = 'http://'+x+'/favicon.ico';
+                    img2.onerror = function(xxx){
+                    xxx.target.src = 'http://ele.me/favicon.ico'
+                }
+                    localStorage.setItem('uuu',JSON.stringify(hash))
+                }
+                return button
+        }
+        function createImg(domain){
+            var img = tag('img')
+                if(domain){
+                    img.src = 'http://'+domain+'/favicon.ico'
+                }else{
+                    img.src = 'http://ele.me/favicon.ico'
+                }
+                img.onerror = function(xxx){
+                    xxx.target.src = 'http://ele.me/favicon.ico'
+                }
+                return img;
+        }
+        //取出localStorage中的uuu对应的hash
+        var hashInlocalStorage = getFromLocalStorage('uuu')
         if(hashInlocalStorage){
             hash=hashInlocalStorage
         }
+        //2.生成键盘
         //遍历keys，生成kdb标签
-        index = 0
-        while(index< keys['length']){
-            divXXX = document.createElement('div')
-            main.appendChild(divXXX)
-            row = keys[index] //第一个数组 第二个数组 第三个数组
-            index2 = 0
-            while(index2<row['length']){
-                kbdXXX = document.createElement('kbd')
-                kbdXXX.textContent = row[index2]
-                buttonx = document.createElement('button')
-                buttonx.textContent='编辑'
-                buttonx.id=row[index2]
-                buttonx.onclick=function(qweqwe){
-                    key=qweqwe['target']['id']
-                    x=prompt('给我一个网址')
-                    hash[key]=x
-                    localStorage.setItem('uuu',JSON.stringify(hash))
-                }
-                kbdXXX.appendChild(buttonx)
-                divXXX.appendChild(kbdXXX)
-                index2 = index2+1
+        for(var index=0;index<keys['length'];index=index+1){
+            var div = tag('div')
+            div.className='row';
+
+            main.appendChild(div)
+
+            var row = keys[index] //第一个数组 第二个数组 第三个数组
+            for(var index2=0;index2<row['length'];index2 = index2+1){
+                var span = createSpan(row[index2])
+
+                var button = createButton(row[index2])
+
+                var img = createImg(hash[row[index2]])
+                
+                var kbd = tag('kbd')
+                kbd.className="key"
+                
+                kbd.appendChild(span)
+                kbd.appendChild(button)
+                kbd.appendChild(img)
+
+                div.appendChild(kbd)
             }
-            index = index+1
         }
+        //3.监听键盘
         document.onkeypress =function(xzkjcnxlkcjlk){
-            key=xzkjcnxlkcjlk['key']
-            website=hash[key]
+            var key=xzkjcnxlkcjlk['key']
+            var website=hash[key]
             console.log(website)
             // location.href ='http://'+website;
             window.open('http://'+website,'_blank')
